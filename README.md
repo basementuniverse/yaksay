@@ -1,6 +1,16 @@
 # yaksay
 Sometimes you just need to hear a yak say it...
 
+This is a Laravel Artisan command. The command signature is:
+
+`yak:say {--roadkill} {--triggered} {--imagine} {--costume=yak} {message?}`
+
+Available costumes:
+
+* yak
+* monkey
+* seal
+
 ## Example
 
 ```
