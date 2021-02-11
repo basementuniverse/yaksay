@@ -9,32 +9,32 @@ class YakSay extends Command
     /**
      * Maximum line length inside the speech bubble, including horizontal padding but not including horizontal margin
      */
-    const MAX_LINE_LENGTH = 32;
+    private const MAX_LINE_LENGTH = 32;
 
     /**
      * Number of blank lines to add above and below the message inside the speech bubble
      */
-    const VERTICAL_PADDING = 1;
+    private const VERTICAL_PADDING = 1;
 
     /**
      * Number of spaces between the message and the speech bubble side borders
      */
-    const HORIZONTAL_PADDING = 1;
+    private const HORIZONTAL_PADDING = 1;
 
     /**
      * Horizontal offset of the speech bubble from the left edge of the terminal
      */
-    const HORIZONTAL_MARGIN = 2;
+    private const HORIZONTAL_MARGIN = 2;
 
     /**
      * Number of blank lines between the speech bubble and the yak
      */
-    const VERTICAL_MARGIN = 1;
+    private const VERTICAL_MARGIN = 1;
 
     /**
      * An associative array of speaking animals and their offset positions
      */
-    const ANIMALS = [
+    private const ANIMALS = [
         'yak' => [
             'text' => '
 (__)____
@@ -114,6 +114,33 @@ W (O)   W /
 /\__/ =o=
 \____<_)>',
             'offset' => -2
+        ],
+        'snake' => [
+            'text' => '
+o-o_____
+\_/----.\
+ v  ___//
+   //--\'
+   \>',
+            'offset' => -2
+        ],
+        'snake-dead' => [
+            'text' => '
+x-x_____
+\_/----.\
+ u  ___//
+   //--\'
+   \>',
+            'offset' => -2
+        ],
+        'snake-surprised' => [
+            'text' => '
+O-O_____
+\_/----.\
+    ___//
+   //--\'
+   \>',
+            'offset' => -2
         ]
     ];
 
@@ -149,7 +176,12 @@ W (O)   W /
     public function handle()
     {
         // Give the yak a costume
-        $yakIndex = array_key_exists($this->option('costume'), self::ANIMALS) ? $this->option('costume') : 'yak';
+        $yakIndex = array_key_exists(
+            $this->option('costume'),
+            self::ANIMALS
+        )
+            ? $this->option('costume')
+            : 'yak';
 
         // Optionall kill or surprise the yak
         if ($this->option('roadkill')) {
@@ -172,16 +204,22 @@ W (O)   W /
         }
 
         // Wrap input onto multiple lines
-        $wrapped = wordwrap($this->argument('message'), self::MAX_LINE_LENGTH - (2 * self::HORIZONTAL_PADDING), "\r\n", true);
+        $wrapped = wordwrap(
+            $this->argument('message'),
+            self::MAX_LINE_LENGTH - (2 * self::HORIZONTAL_PADDING),
+            "\r\n",
+            true
+        );
 
         // Find actual maximum line length
         $lines = preg_split("/\r\n|\n|\r/", $wrapped);
         $lineLength = max(array_map('strlen', $lines)) + 2 * self::HORIZONTAL_PADDING;
 
         // Pad lines
-        $lines = array_map(function($line) use($horizontalPadding, $lineLength) {
-            return str_pad($horizontalPadding . $line . $horizontalPadding, $lineLength);
-        },
+        $lines = array_map(
+            function ($line) use ($horizontalPadding, $lineLength) {
+                return str_pad($horizontalPadding . $line . $horizontalPadding, $lineLength);
+            },
             array_merge($verticalPadding, $lines, $verticalPadding)
         );
 
@@ -201,7 +239,10 @@ W (O)   W /
                 $speechBubbleLeftBorder . $line . $speechBubbleRightBorder .
                 "\r\n";
         }
-        echo $speechBubbleMargin . str_repeat('-', $arrowOffset - 1) . $speechBubbleArrow . str_repeat('-', $lineLength - $arrowOffset);
+        echo $speechBubbleMargin
+            . str_repeat('-', $arrowOffset - 1)
+            . $speechBubbleArrow
+            . str_repeat('-', $lineLength - $arrowOffset);
         echo str_repeat("\r\n", self::VERTICAL_MARGIN + 1);
 
         // Draw the yak

@@ -10,6 +10,7 @@ Available costumes:
 * yak
 * monkey
 * seal
+* snake
 
 ## Example
 
